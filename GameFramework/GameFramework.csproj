@@ -96,6 +96,13 @@
     <Compile Include="DataTable\IDataTable.cs" />
     <Compile Include="DataTable\IDataTableHelper.cs" />
     <Compile Include="DataTable\IDataTableManager.cs" />
+    <Compile Include="Data\Constant.cs" />
+    <Compile Include="Data\Data.cs" />
+    <Compile Include="Data\DataInfo.cs" />
+    <Compile Include="Data\DataManager.cs" />
+    <Compile Include="Data\DataManager.DataStatus.cs" />
+    <Compile Include="Data\IData.cs" />
+    <Compile Include="Data\IDataManager.cs" />
     <Compile Include="Debugger\DebuggerManager.cs" />
     <Compile Include="Debugger\DebuggerManager.DebuggerWindowGroup.cs" />
     <Compile Include="Debugger\IDebuggerManager.cs" />
