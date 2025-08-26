@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------
+//------------------------------------------------------------
 // Game Framework
 // Copyright © 2013-2021 Jiang Yin. All rights reserved.
 // Homepage: https://gameframework.cn/
@@ -430,6 +430,13 @@ namespace GameFramework.Resource
         /// </summary>
         /// <param name="initResourcesCompleteCallback">使用单机模式并初始化资源完成时的回调函数。</param>
         void InitResources(InitResourcesCompleteCallback initResourcesCompleteCallback);
+
+        /// <summary>
+        /// 使用单机模式并添加资源。
+        /// </summary>
+        /// <param name="resourceVersionPath">要添加的资源版本路径。</param>
+        /// <param name="addResourcesCompleteCallback">使用单机模式并添加资源完成时的回调函数。</param>
+        void AddResources(string resourceVersionPath, AddResourcesCompleteCallback addResourcesCompleteCallback);
 
         /// <summary>
         /// 使用可更新模式并检查版本资源列表。

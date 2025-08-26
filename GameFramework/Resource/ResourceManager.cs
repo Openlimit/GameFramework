@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------
+//------------------------------------------------------------
 // Game Framework
 // Copyright © 2013-2021 Jiang Yin. All rights reserved.
 // Homepage: https://gameframework.cn/
@@ -41,6 +41,7 @@ namespace GameFramework.Resource
 
         private IFileSystemManager m_FileSystemManager;
         private ResourceIniter m_ResourceIniter;
+        private ResourceAdder m_ResourceAdder;
         private VersionListProcessor m_VersionListProcessor;
         private ResourceVerifier m_ResourceVerifier;
         private ResourceChecker m_ResourceChecker;
@@ -59,6 +60,7 @@ namespace GameFramework.Resource
         private MemoryStream m_CachedStream;
         private DecryptResourceCallback m_DecryptResourceCallback;
         private InitResourcesCompleteCallback m_InitResourcesCompleteCallback;
+        private AddResourcesCompleteCallback m_AddResourcesCompleteCallback;
         private UpdateVersionListCallbacks m_UpdateVersionListCallbacks;
         private VerifyResourcesCompleteCallback m_VerifyResourcesCompleteCallback;
         private CheckResourcesCompleteCallback m_CheckResourcesCompleteCallback;
@@ -95,6 +97,7 @@ namespace GameFramework.Resource
             m_ResourcePackVersionListSerializer = null;
 
             m_ResourceIniter = null;
+            m_ResourceAdder = null;
             m_VersionListProcessor = null;
             m_ResourceVerifier = null;
             m_ResourceChecker = null;
@@ -113,6 +116,7 @@ namespace GameFramework.Resource
             m_CachedStream = null;
             m_DecryptResourceCallback = null;
             m_InitResourcesCompleteCallback = null;
+            m_AddResourcesCompleteCallback = null;
             m_UpdateVersionListCallbacks = null;
             m_VerifyResourcesCompleteCallback = null;
             m_CheckResourcesCompleteCallback = null;
@@ -777,6 +781,12 @@ namespace GameFramework.Resource
                 m_ResourceIniter = null;
             }
 
+            if (m_ResourceAdder != null)
+            {
+                m_ResourceAdder.Shutdown();
+                m_ResourceAdder = null;
+            }
+
             if (m_VersionListProcessor != null)
             {
                 m_VersionListProcessor.VersionListUpdateSuccess -= OnVersionListProcessorUpdateSuccess;
@@ -1110,6 +1120,50 @@ namespace GameFramework.Resource
             m_RefuseSetFlag = true;
             m_InitResourcesCompleteCallback = initResourcesCompleteCallback;
             m_ResourceIniter.InitResources(m_CurrentVariant);
+        }
+
+        /// <summary>
+        /// 使用单机模式并添加资源。
+        /// </summary>
+        /// <param name="resourceVersionPath">要添加的资源版本路径。</param>
+        /// <param name="addResourcesCompleteCallback">使用单机模式并添加资源完成时的回调函数。</param>
+        public void AddResources(string resourceVersionPath, AddResourcesCompleteCallback addResourcesCompleteCallback)
+        {
+            if (string.IsNullOrEmpty(resourceVersionPath))
+            {
+                throw new GameFrameworkException("Resource version path is invalid.");
+            }
+
+            if (addResourcesCompleteCallback == null)
+            {
+                throw new GameFrameworkException("Add resources complete callback is invalid.");
+            }
+
+            if (m_ResourceMode == ResourceMode.Unspecified)
+            {
+                throw new GameFrameworkException("You must set resource mode first.");
+            }
+
+            if (m_ResourceMode != ResourceMode.Package)
+            {
+                throw new GameFrameworkException("You can not use AddResources without package resource mode.");
+            }
+
+            if (m_ResourceAdder != null)
+            {
+                throw new GameFrameworkException("You can not use AddResources at this time.");
+            }
+
+            if (!m_RefuseSetFlag)
+            {
+                throw new GameFrameworkException("You must init resources first.");
+            }
+
+            m_ResourceAdder = new ResourceAdder(this);
+            m_ResourceAdder.ResourceAddComplete += OnAdderResourceAddComplete;
+
+            m_AddResourcesCompleteCallback = addResourcesCompleteCallback;
+            m_ResourceAdder.AddResources(resourceVersionPath, m_CurrentVariant);
         }
 
         /// <summary>
@@ -2369,6 +2423,16 @@ namespace GameFramework.Resource
 
             m_InitResourcesCompleteCallback();
             m_InitResourcesCompleteCallback = null;
+        }
+
+        private void OnAdderResourceAddComplete(string resourceVersionPath, bool result)
+        {
+            m_ResourceAdder.ResourceAddComplete -= OnAdderResourceAddComplete;
+            m_ResourceAdder.Shutdown();
+            m_ResourceAdder = null;
+
+            m_AddResourcesCompleteCallback(resourceVersionPath, result);
+            m_AddResourcesCompleteCallback = null;
         }
 
         private void OnVersionListProcessorUpdateSuccess(string downloadPath, string downloadUri)

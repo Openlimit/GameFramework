@@ -208,6 +208,7 @@
     <Compile Include="Resource\DecryptResourceCallback.cs" />
     <Compile Include="Resource\HasAssetResult.cs" />
     <Compile Include="Resource\ILoadResourceAgentHelper.cs" />
+    <Compile Include="Resource\AddResourcesCompleteCallback.cs" />
     <Compile Include="Resource\InitResourcesCompleteCallback.cs" />
     <Compile Include="Resource\IResourceGroup.cs" />
     <Compile Include="Resource\IResourceGroupCollection.cs" />
