@@ -264,6 +264,7 @@
     <Compile Include="Resource\ResourceManager.ResourceGroup.cs" />
     <Compile Include="Resource\ResourceManager.ResourceGroupCollection.cs" />
     <Compile Include="Resource\ResourceManager.ResourceInfo.cs" />
+    <Compile Include="Resource\ResourceManager.ResourceAdder.cs" />
     <Compile Include="Resource\ResourceManager.ResourceIniter.cs" />
     <Compile Include="Resource\ResourceManager.ResourceLoader.AssetObject.cs" />
     <Compile Include="Resource\ResourceManager.ResourceLoader.cs" />
