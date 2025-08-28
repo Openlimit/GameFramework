@@ -54,7 +54,7 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException("Resource helper is invalid.");
                 }
 
-                m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadOnlyPath, RemoteVersionListFileName)), new LoadBytesCallbacks(OnLoadPackageVersionListSuccess, OnLoadPackageVersionListFailure), resourceVersionPath);
+                m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(resourceVersionPath), new LoadBytesCallbacks(OnLoadPackageVersionListSuccess, OnLoadPackageVersionListFailure), resourceVersionPath);
             }
 
             private void OnLoadPackageVersionListSuccess(string fileUri, byte[] bytes, float duration, object userData)
